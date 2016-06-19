@@ -188,7 +188,7 @@ func TestCreate(t *testing.T) {
 	})
 	defer User{}.DeleteAll()
 
-	assertErrors(t, errs)
+	assertError(t, errs)
 
 	expect, _ := User{}.FindBy("name", "TestCreate")
 	assertEqualStruct(t, expect, u)
@@ -221,7 +221,7 @@ func TestSaveWithInvalidData(t *testing.T) {
 
 	p.Name = "name"
 	_, errs = p.Save()
-	assertErrors(t, errs)
+	assertError(t, errs)
 
 	// OnUpdate
 	p.Name = "invalid2"
@@ -239,7 +239,7 @@ func TestSave(t *testing.T) {
 	u := &User{Name: "test"}
 
 	_, errs := u.Save()
-	assertErrors(t, errs)
+	assertError(t, errs)
 
 	if u.Id == 0 {
 		t.Errorf("Id should be setted after save, but isn't setted")
@@ -250,7 +250,7 @@ func TestSave(t *testing.T) {
 
 	u.Name = "test2"
 	_, errs = u.Save()
-	assertErrors(t, errs)
+	assertError(t, errs)
 
 	expect, _ = User{}.Find(u.Id)
 	assertEqualStruct(t, expect, u)
@@ -264,7 +264,7 @@ func TestUpdate(t *testing.T) {
 
 	expect := UserParams{Name: "test2"}
 	_, errs = u.Update(expect)
-	assertErrors(t, errs)
+	assertError(t, errs)
 
 	actual, _ := User{}.Find(u.Id)
 	if expect.Name != actual.Name {
@@ -280,7 +280,7 @@ func TestUpdateColumns(t *testing.T) {
 
 	expect := UserParams{Name: "test2"}
 	_, errs = u.UpdateColumns(expect)
-	assertErrors(t, errs)
+	assertError(t, errs)
 
 	actual, _ := User{}.Find(u.Id)
 	if expect.Name != actual.Name {
@@ -294,7 +294,7 @@ func TestDelete(t *testing.T) {
 	u, _ := User{}.Create(UserParams{Name: "test1"})
 
 	_, errs := u.Delete()
-	assertErrors(t, errs)
+	assertError(t, errs)
 
 	actual, _ := User{}.Find(u.Id)
 	if actual != nil {
@@ -422,12 +422,6 @@ func TestAll(t *testing.T) {
 func assertEqualStruct(t *testing.T, expect, actual interface{}) {
 	if !reflect.DeepEqual(expect, actual) {
 		t.Errorf("struct should be equal to %v, but %v", expect, actual)
-	}
-}
-
-func assertErrors(t *testing.T, errs *ar.Errors) {
-	if errs != nil {
-		t.Errorf("errors should be nil, but %v", errs)
 	}
 }
 
